@@ -19,7 +19,7 @@ export output="-o /path/to/output/directory/%(uploader)s/%(title)s.%(ext)s -f 13
 #Set the youtube-dl command, if other switches are required
 export download="youtube-dl"
 
-#Input 
+#Input video URL, new line for each
 files="
 http://www.youtube.com/watch?v=ABCDEFGHI_J
 "
