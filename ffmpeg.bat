@@ -16,7 +16,7 @@ set output=C:\output\directory
 REM The settings that ffmpeg will use
 REM -b:v is video quality
 REM -b:a is audio quality
-set settings=-acodec libfaac -b:a 128k -vcodec mpeg4 -b:v 1200k -flags +aic+mv4
+set settings=-c:v libx264 -preset slow -crf 22 -c:a copy
 
 REM Comma separated list of file names
 REM NOTE: Filenames can contain spaces
