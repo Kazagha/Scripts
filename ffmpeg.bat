@@ -14,8 +14,8 @@ set input=C:\input\directory
 set output=C:\output\directory
 
 REM The settings that ffmpeg will use
-REM -b:v is video quality
-REM -b:a is audio quality
+REM -c:v is video quality / codec
+REM -c:a is audio quality
 set settings=-c:v libx264 -preset slow -crf 22 -c:a copy
 
 REM Comma separated list of file names
