@@ -1,13 +1,11 @@
 #! /bin/bash
 
 #Author: Kazagha
-#Date: 24/10/2013
-#Current Revision: 1
+#Date: 31/12/2013
+#Current Revision: 1.1
 
 #Requirements
 #googlecl; Google Command Line Tools - http://code.google.com/p/googlecl/
-#pv; (Optional) PipeViewer - http://code.google.com/p/pipeviewer/
-#   NOTE: pv is for aesthetics, to remove pv delete code snippits '| pv -qL 10'.
 #sed; Stream EDitor - http://sed.sourceforge.net/
 #   NOTE: sed is used to remove the directory path from the filenames.
 #   In the below the /home/user/ path would be removed from the title.
@@ -26,7 +24,7 @@ files="
 /home/user/file_to_backup
 "
 
-echo "Google Docs Backup" | pv -qL 10
+echo "Google Docs Backup"
 
 for f in $files
         do
@@ -36,8 +34,7 @@ for f in $files
                         -e s:\\.sh:: \
                         -e s:\\.:: \
                         -e s:\\/home\\/user\\/:: \
-                        -e s:\\/path\\/to\\/backup\\/:: \
-                | pv -qL 10
+                        -e s:\\/path\\/to\\/backup\\/:: 
 
         # Upload the file to GoogleDocs
         $upload $f --title $(echo $f | sed -e s:\\.sh:: \
