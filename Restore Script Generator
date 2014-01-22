@@ -15,12 +15,12 @@
                Y888888888888888888DSI8888b
 
 	Author: Kazagha
-  Date: 22/01/2014
-  Current Revision: 1
+  	Date: 22/01/2014
+  	Current Revision: 1
   ___________________________________________________________________
-	| 01 | Fetch Information from Database								|
-	| 02 | Fetch Information from Backup File							|
-	| 03 | Generate Restore Script										    |
+	| 01 | Fetch Information from Database			
+	| 02 | Fetch Information from Backup File		
+	| 03 | Generate Restore Script				
 
 */
 
