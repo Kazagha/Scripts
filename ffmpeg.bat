@@ -17,6 +17,9 @@ REM The settings that ffmpeg will use
 REM -c:v is video quality / codec
 REM -c:a is audio quality
 set settings=-c:v libx264 -preset slow -crf 22 -c:a copy
+REM Alternative settings using mpeg4 codec, should work with Windows Media Player
+REM Note: Rename file extension to .mpg
+REM set settings=-acodec libfaac -b:a 128k -vcodec mpeg4 -b:v 1200k -flags +aic+mv4
 
 REM Comma separated list of file names
 REM NOTE: Filenames can contain spaces
