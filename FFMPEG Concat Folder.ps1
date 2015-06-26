@@ -1,12 +1,32 @@
-$rootFolder = Get-ChildItem "C:\Temp\Video"
-$outDir = "M:\Gaming\Chris"
-$ffmpeg = "C:\chris.green\ffmpeg-20150610-git-913685f-win64-static\bin\ffmpeg.exe"
+<#
+ # Author: Kazagha
+ # Date: 26/06/2015
+ # 
+ # The script requires FFMPEG (www.ffmpeg.com)
+ #>
+
+<#
+ # Set Variables
+ #
+ # rootFolder: Directory where videos are located
+ # outDir: Directory to save converted videos
+ # ffmped: Location of ffmpeg.exe
+ #>
+
+$rootFolder = Get-ChildItem "C:\root"
+$outDir = "C:\out"
+$ffmpeg = "C:\ffmpeg\bin\ffmpeg.exe"
+
+# Create blank array 
 $array = @()
 
+# Iterate through each element in the root directory
 foreach($e in $rootFolder) {
+    # Check if the element is a folder
     if($e.Mode.Equals("d----")) {
-        $subArray = @()
 
+        # Collect all elements in the sub folder into the subArray variable
+        $subArray = @()
         $subFiles = Get-ChildItem $e.FullName -filter "*.avi"
         
         foreach($s IN $subFiles) {
