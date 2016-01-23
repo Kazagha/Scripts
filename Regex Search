@@ -1,0 +1,25 @@
+$array = @()
+$outfile = 'C:\temp\results.txt'
+$errLog = 'C:\temp\errorlog.txt'
+
+$array += "\\path\to\directory"
+
+$count = 1
+foreach ($path in $array) {
+    Write-Output ("Processing File #{0}:" -f $count )
+    $count++
+            
+    $matches = Get-ChildItem -Path $path -Recurse -ErrorAction SilentlyContinue -ErrorVariable err | Where-Object {$_.FullName -MATCH '(?=.*TermA)(?=.*TermB)'} | Select-Object FullName 
+    
+    foreach ($n in $matches) {
+        Add-Content -Value $n.FullName -Path $outfile
+    }
+
+    foreach ($errorRecord in $err) {
+        if ($errorRecord.Exception -is [System.IO.PathTooLongException]) {
+            Add-Content -Value $errorRecord.TargetObject -Path $errLog 
+        } else {
+            Write-Error -ErrorRecord $errorRecord
+        }
+    }
+}
