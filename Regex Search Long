@@ -1,0 +1,53 @@
+$outfile = "C:\temp\LongSearch.txt"
+$errorLongName = "C:\temp\LongSearch-LongNames.txt"
+$errorlog = "C:\temp\LongSearch-errorlog.txt"
+$errorlogAdvanced = "C:\temp\LongSearch-errorlogAdvanced.txt"
+
+$array = @()
+$array += "\\path\to\long\directory"
+
+$searchTerms = @()
+$searchTerms += '(?=.*TermA)(?=.*TermB)'
+$searchTerms += '(?=.*TermA)(?=.*TermC)'
+$searchTerms += '(?=.*TermA)(?=.*TermD)'
+
+$i = 1
+
+foreach ($f in $array) {
+     Write-Output ("Processing {0}:" -f $i )
+     $i++
+
+     If(Test-Path $f.Substring(0,$f.LastIndexOf("\"))) {
+         # Connect the mapped drive
+         #Write-Output ("Connect L:\")
+         net use L: $f.Substring(0,$f.LastIndexOf("\")) /Persistent:No 
+         #Write-Output ("L: has been connected")
+         Start-Sleep 1
+         
+         foreach ($search in $searchTerms) {
+             Write-Output ("Searching on {0}" -f $search)
+             $matches = Get-ChildItem -Path L:\ -Recurse -ErrorAction SilentlyContinue -ErrorVariable err | Where-Object {$_.FullName -MATCH $search}  | Select-Object FullName  
+
+             foreach ($n in $matches) {
+                Write-Output ("{0}{1}" -f $f.Substring(0,$f.LastIndexOf("\")), $n.FullName.Substring(2)) |  Out-File $outfile -Append
+             }
+
+             foreach ($errorRecord in $err) {
+                if ($errorRecord.Exception -is [System.IO.PathTooLongException]) {
+                    Add-Content -Value $errorRecord.TargetObject -Path $errorLongName
+                    Add-Content -Value $f.Substring(0,$f.LastIndexOf("\")) + ' ' + $errorRecord.TargetObject -Path $errorlogAdvanced
+                } else {
+                    Write-Error -ErrorRecord $errorRecord
+                }
+             }
+         }
+
+
+         #Start-Sleep 1
+         # Delete the mapped drive
+         net use L: /DELETE /YES
+         Start-Sleep 1
+    } ELSE {
+        Write-Output ("File not found: {0}" -f $f) | Out-File $errorlog -Append
+    }
+}
