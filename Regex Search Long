@@ -1,11 +1,14 @@
+# Set output files
 $outfile = "C:\temp\LongSearch.txt"
 $errorLongName = "C:\temp\LongSearch-LongNames.txt"
 $errorlog = "C:\temp\LongSearch-errorlog.txt"
 $errorlogAdvanced = "C:\temp\LongSearch-errorlogAdvanced.txt"
 
+#foreacharch directories
 $array = @()
 $array += "\\path\to\long\directory"
 
+# Set search terms
 $searchTerms = @()
 $searchTerms += '(?=.*TermA)(?=.*TermB)'
 $searchTerms += '(?=.*TermA)(?=.*TermC)'
@@ -24,14 +27,17 @@ foreach ($f in $array) {
          #Write-Output ("L: has been connected")
          Start-Sleep 1
          
+         # Iterate through search terms
          foreach ($search in $searchTerms) {
              Write-Output ("Searching on {0}" -f $search)
              $matches = Get-ChildItem -Path L:\ -Recurse -ErrorAction SilentlyContinue -ErrorVariable err | Where-Object {$_.FullName -MATCH $search}  | Select-Object FullName  
 
-             foreach ($n in $matches) {
+             # Write matches to file
+           foreach ($n in $matches) {
                 Write-Output ("{0}{1}" -f $f.Substring(0,$f.LastIndexOf("\")), $n.FullName.Substring(2)) |  Out-File $outfile -Append
              }
 
+             # Write errors to file
              foreach ($errorRecord in $err) {
                 if ($errorRecord.Exception -is [System.IO.PathTooLongException]) {
                     Add-Content -Value $errorRecord.TargetObject -Path $errorLongName
@@ -43,10 +49,9 @@ foreach ($f in $array) {
          }
 
 
-         #Start-Sleep 1
+     
          # Delete the mapped drive
-         net use L: /DELETE /YES
-         Start-Sleep 1
+         net use L: /DELETE /YEfile       Start-Sleep 1
     } ELSE {
         Write-Output ("File not found: {0}" -f $f) | Out-File $errorlog -Append
     }
