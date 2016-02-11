@@ -1,0 +1,24 @@
+ function fileStructure([String] $directory, [String] $outputFile, [String] $errorLog) {
+      
+    # Collect All Children objects and sort them by name 
+    $array = Get-ChildItem -Path "$directory" -ErrorAction SilentlyContinue -ErrorVariable error | Sort-Object Name
+    
+    foreach ($var IN $array) 
+    {        
+        #Write-Output ("{0}" -f $var.FullName)
+        IF ($var -is [System.IO.DirectoryInfo] )
+        {
+            Write-Output ("Directory {0}" -f $var.FullName) 
+            # Write to the output file
+            $value = 'dir,' + $var.FullName.Replace("\",",")
+            Add-Content -Value $value -Path $outputFile
+            # Recursively search this directory
+            fileStructure -directory $var.FullName.ToString() -outputFile $outputFile -errorLog $errorLog
+        } ELSE {
+            Write-Output ("    File {0}" -f $var.FullName)
+            # Write to the output file
+            $value = 'file,' + $var.FullName.Replace("\",",")
+            Add-Content -Value $value -Path $outputFile
+        }
+    }
+}
