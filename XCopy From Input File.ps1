@@ -1,6 +1,6 @@
 
 # Source File: List of directory and filenames, new line for each
-$sourceFile = "C:\temp\search\S Drive results.txt"
+$sourceFile = "C:\temp\search\results.txt"
 # Destinaton: The destination directory /w blackslash at the end
 $dest = "C:\temp\Search\"
 
