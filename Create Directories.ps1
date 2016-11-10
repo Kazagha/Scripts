@@ -11,13 +11,13 @@
 # Set Variables
 
     # Location of the CSV
-    $csv_file = 'C:\temp\Directories\Users.csv'
+    $csv_file = 'C:\temp\ECM Directories\Users.csv'
 
     # Destination Directory (where the directories will be created)
-    $out_dir = 'C:\temp\Directories'
+    $out_dir = 'C:\temp\ECM Directories'
 
     # Error Log
-    $err_file = 'C:\temp\Directories\error.txt'
+    $err_file = 'C:\temp\ECM Directories\error.txt'
 
 # Import the NTFS Security module 
     Import-Module NTFSSecurity
@@ -25,40 +25,38 @@
 # Load the users CSV file 
     $users = Import-Csv $csv_file
 
-# Begin Iterating through the users
+# Begin Iterating through the users  
     foreach($u in $users)
-    {
-
-        Write-Output ('WDRC\' + $u.UserName)
+    {  
+        Write-Output ("Processing: {0}" -f ('WDRC\' + $u.UserName)) 
 
         TRY
         {   
             # Check that the user exists in AD                 
-            Get-ADUser $u.UserName
-            
+            Get-ADUser $u.UserName | Out-Null
+                        
             # Set the Variables
             $dir_root = ("{0}\{1}\" -f $out_dir, $u.Directory)
             $dir_myFiles = ("{0}\{1}\{2}" -f $out_dir, $u.Directory, 'My Files')
             $dir_addToECM = ("{0}\{1}\{2}" -f $out_dir, $u.Directory, 'Add to ECM')
         
             # Create the Root Directory
-            New-Item -ItemType Directory $dir_root
+            New-Item -ItemType Directory $dir_root | Out-Null
 
             # Change Permissions
             $usr = ('WDRC\' + $u.Username)
             Add-NTFSAccess -Path $dir_root -Account $usr -AccessRights FullControl
 
             # Create the directories
-            New-Item -ItemType Directory $dir_myFiles
-            New-Item -ItemType Directory $dir_addToECM
-
+            New-Item -ItemType Directory $dir_myFiles | Out-Null
+            New-Item -ItemType Directory $dir_addToECM | Out-Null
+            
         } CATCH {
-
-            Write-Output "Invalid User"
+                    
             Add-Content -Value $u -Path $err_file
         
         }
-    }
+   }
 
 # Write the permissions out to file for review 
     Get-NTFSAccess -ExcludeInherited $out_dir | Export-Csv $out_dir\permissions.csv
