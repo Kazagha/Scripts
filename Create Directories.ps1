@@ -34,22 +34,28 @@
         {   
             # Check that the user exists in AD                 
             Get-ADUser $u.UserName | Out-Null
-                        
+                                                
             # Set the Variables
             $dir_root = ("{0}\{1}\" -f $out_dir, $u.Directory)
             $dir_myFiles = ("{0}\{1}\{2}" -f $out_dir, $u.Directory, 'My Files')
             $dir_addToECM = ("{0}\{1}\{2}" -f $out_dir, $u.Directory, 'Add to ECM')
         
-            # Create the Root Directory
-            New-Item -ItemType Directory $dir_root | Out-Null
+            # Check if the direcotry exists
+            IF((Test-Path $dir_root).Equals($false))
+            { 
 
-            # Change Permissions
-            $usr = ('WDRC\' + $u.Username)
-            Add-NTFSAccess -Path $dir_root -Account $usr -AccessRights FullControl
+                # Create the Root Directory
+                New-Item -ItemType Directory $dir_root | Out-Null
 
-            # Create the directories
-            New-Item -ItemType Directory $dir_myFiles | Out-Null
-            New-Item -ItemType Directory $dir_addToECM | Out-Null
+                # Change Permissions
+                $usr = ('WDRC\' + $u.Username)
+                Add-NTFSAccess -Path $dir_root -Account $usr -AccessRights FullControl
+
+                # Create the directories
+                New-Item -ItemType Directory $dir_myFiles | Out-Null
+                New-Item -ItemType Directory $dir_addToECM | Out-Null
+
+            }
             
         } CATCH {
                     
@@ -61,5 +67,3 @@
 # Write the permissions out to file for review 
     Write-Output "Compiling permissions report"
     Get-ChildItem $out_dir | Get-NTFSAccess -ExcludeInherited | Export-Csv $out_dir\permissions.csv
- 
-
