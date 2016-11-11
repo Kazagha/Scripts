@@ -59,6 +59,7 @@
    }
 
 # Write the permissions out to file for review 
-    Get-NTFSAccess -ExcludeInherited $out_dir | Export-Csv $out_dir\permissions.csv
+    Write-Output "Compiling permissions report"
+    Get-ChildItem $out_dir | Get-NTFSAccess -ExcludeInherited | Export-Csv $out_dir\permissions.csv
  
 
